@@ -1,7 +1,16 @@
 # Compiled class file
 *.class
 
-# Log file
+# Compiled output
+/dist
+/out-tsc
+/tmp
+
+# Only exists if Bazel was run
+/bazel-out
+
+# Log files
+logs/
 *.log
 
 # BlueJ files
@@ -10,7 +19,11 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# Package Files
 *.jar
 *.war
 *.nar
@@ -19,5 +32,73 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Virtual machine crash logs
 hs_err_pid*
+
+# IDE Jetbrains IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# IDE Eclipse
+.apt_generated/
+.apt_generated_tests/
+.settings/
+.sts4-cache/
+target/
+.classpath
+.factorypath
+.project
+.springBeans
+.tern-project
+
+# IDE NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+build/
+
+# IDE MS Visual Studio Code
+.vs/
+.vscode/
+.history/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Others Editors
+*.sublime-workspace
+.c9/
+*.launch
+
+# Dependencies
+/node_modules
+
+# JSON Server
+db-*.json
+testedb.mv.db
+testedb.trace.db
+
+# Testes e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Diversos
+/coverage
+/typings
+connect.lock
+.editorconfig
+libpeerconnection.log
+npm-debug.log
+.sass-cache
+testem.log
+yarn-error.log
