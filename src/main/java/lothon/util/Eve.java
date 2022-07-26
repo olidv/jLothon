@@ -1,4 +1,7 @@
 package lothon.util;
 
-public class Eve {
+public final class Eve {
+
+    private Eve() {}
+
 }

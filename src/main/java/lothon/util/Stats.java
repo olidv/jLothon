@@ -1,4 +1,7 @@
 package lothon.util;
 
-public class Stats {
+public final class Stats {
+
+    private Stats() {}
+
 }

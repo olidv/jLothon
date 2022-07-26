@@ -94,6 +94,7 @@ Thumbs.db
 
 # Diversos
 /coverage
+/data
 /typings
 connect.lock
 .editorconfig

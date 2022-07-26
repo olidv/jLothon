@@ -1,4 +1,7 @@
 package lothon.util;
 
-public class Infra {
+public final class Infra {
+
+    private Infra() {}
+
 }

@@ -1,5 +1,5 @@
 package lothon.compute;
 
-public class AbstractCompute {
+public abstract class AbstractCompute {
 
 }

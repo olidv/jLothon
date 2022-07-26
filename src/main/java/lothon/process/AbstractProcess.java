@@ -1,4 +1,4 @@
 package lothon.process;
 
-public class AbstractProcess {
+public abstract class AbstractProcess {
 }
