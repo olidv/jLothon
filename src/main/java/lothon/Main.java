@@ -1,24 +1,27 @@
 package lothon;
 
-import lothon.domain.Loteria;
-import lothon.util.Infra;
+import static lothon.util.Eve.*;
+import lothon.process.AbstractProcess;
+import lothon.process.ProcessDiaDeSorte;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     private static void printOpcoes(String msgErro) {
-        System.out.println(msgErro + '\n');
-        System.out.println("Para processar os sorteios das loterias e calcular estatisticas:");
-        System.out.println("jLothon  -c  [unidade:][diretorio] \n");
-
-        System.out.println("\t [unidade:][diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
+        print(msgErro + '\n');
+        print("Para processar os sorteios das loterias e calcular estatisticas:");
+        print("  jLothon  -c  [unidade:][diretorio] \n");
+        print("\t [unidade:][diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
     }
 
-    public static void main(String[] args) throws IOException {
+    private static AbstractProcess[] getProcessChain(File dataDir) {
+        return new AbstractProcess[]{new ProcessDiaDeSorte(dataDir),
+                                     new ProcessDiaDeSorte(dataDir)};
+    }
+
+    public static void main(String[] args) {
         // Contabiliza o tempo gasto.
         long millis = System.currentTimeMillis();
 
@@ -46,26 +49,29 @@ public class Main {
             System.exit(1);
         }
 
-        // Inicia o processamento efetuando a leitura dos arquivos CSV:
-        System.out.println(">> Diretorio Corrente = " + System.getProperty("user.dir"));
-        System.out.println(">> Diretorio de Dados = " + dataDir.getAbsolutePath());
-        System.out.println(">> Primeiro Arquivo CSV = " + dataFiles[0]);
+        // informacoes para debug:
+        print(">> Diretorio Corrente = {0}", System.getProperty("user.dir"));
+        print(">> Diretorio de Dados = {0}", dataDir.getAbsolutePath());
+        print(">> Primeiro Arquivo CSV = {0}", dataFiles[0]);
+        print("\n\n");
 
-        Path csvPath = Loteria.DIA_DE_SORTE.getCsvPath(dataDir);
-        System.out.println(">> Arquivo Dia de Sorte = " + csvPath.toAbsolutePath());
-
-        int[][] sorteios = Infra.loadSorteios(csvPath);
+        // Inicia o processamento em paralelo para cada loteria:
+        for (final AbstractProcess process : getProcessChain(dataDir))
+            try {
+                process.start();
+                process.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
 
         // Contabiliza e apresenta o tempo total gasto no processamento:
         millis = System.currentTimeMillis() - millis;
         long min = TimeUnit.MILLISECONDS.toMinutes(millis);
         long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
-        System.out.println("\n\n>> TEMPO DE PROCESSAMENTO: " + String.format("%d min, %d seg", min, sec));
+        print("\n\n>> TEMPO DE PROCESSAMENTO: {0} min, {1} seg", min, sec);
 
         // Encerra o processamento informando que foi realizado com sucesso:
         System.exit(0);
-
     }
-
 
 }

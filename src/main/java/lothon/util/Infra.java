@@ -3,19 +3,20 @@ package lothon.util;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
+import de.siegmar.fastcsv.writer.CsvWriter;
+import lothon.domain.Jogo;
 
 public final class Infra {
 
-    private Infra() {}
-
-    public static int[][] loadSorteios(Path csvPath) throws IOException {
+    public static int[][] loadSorteios(Path csvInput) {
         // efetua a leitura do arquivo CSV com sorteios da loteria:
-        try (final CsvReader csvReader = CsvReader.builder().build(csvPath)) {
-            List<List<String>> list_sorteios = new ArrayList<List<String>>();
+        try (final CsvReader csvReader = CsvReader.builder().build(csvInput)) {
+            List<List<String>> list_sorteios = new ArrayList<>();
             for (final CsvRow csvRow : csvReader) {
                 list_sorteios.add(csvRow.getFields());
             }
@@ -43,7 +44,32 @@ public final class Infra {
             return sorteios;
 
         } catch (IOException ex) {
+            ex.printStackTrace();
             return null;
+        }
+    }
+
+    public static void saveJogos(Path csvOutput, List<Jogo> jogos) {
+        // efetua a gravacao do arquivo CSV com os jogos computados da loteria:
+        try (final CsvWriter csvWriter = CsvWriter.builder().build(csvOutput)) {
+            for (final Jogo jogo : jogos) {
+                final int[] row = jogo.dezenas;
+                Iterable<String> fields = () -> new Iterator<>() {
+                    private int pos=0;
+
+                    public boolean hasNext() {
+                        return pos < row.length;
+                    }
+
+                    public String next() {
+                        return String.valueOf(row[pos++]);
+                    }
+                };
+                csvWriter.writeRow(fields);
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 

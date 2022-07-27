@@ -17,17 +17,22 @@ public class Loteria {
     public final String id;
     public final String nome;
     public final int qtdDezenas;
-    public final int qtdSorteio;
+    public final int qtdBolas;
 
-    private Loteria(String id, String nome, int qtdDezenas, int qtdSorteio) {
+    private Loteria(String id, String nome, int qtdDezenas, int qtdBolas) {
         this.id = id;
         this.nome = nome;
         this.qtdDezenas = qtdDezenas;
-        this.qtdSorteio = qtdSorteio;
+        this.qtdBolas = qtdBolas;
     }
 
-    public Path getCsvPath(File dataDir) {
+    public Path getCsvInput(File dataDir) {
         String fileName = "D_" + this.nome + ".csv";
+        return new File(dataDir, fileName).toPath();
+    }
+
+    public Path getCsvOuput(File dataDir) {
+        String fileName = "JC_" + this.nome + ".csv";
         return new File(dataDir, fileName).toPath();
     }
 
