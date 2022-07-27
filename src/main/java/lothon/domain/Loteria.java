@@ -1,6 +1,7 @@
 package lothon.domain;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class Loteria {
 
@@ -15,19 +16,19 @@ public class Loteria {
 
     public final String id;
     public final String nome;
-    public final int qtdBolas;
-    public final int qtdSorteadas;
+    public final int qtdDezenas;
+    public final int qtdSorteio;
 
-    private Loteria(String id, String nome, int qtdBolas, int qtdSorteadas) {
+    private Loteria(String id, String nome, int qtdDezenas, int qtdSorteio) {
         this.id = id;
         this.nome = nome;
-        this.qtdBolas = qtdBolas;
-        this.qtdSorteadas = qtdSorteadas;
+        this.qtdDezenas = qtdDezenas;
+        this.qtdSorteio = qtdSorteio;
     }
 
-    public File getDataFile(File dataPath) {
+    public Path getCsvPath(File dataDir) {
         String fileName = "D_" + this.nome + ".csv";
-        return new File(dataPath, fileName);
+        return new File(dataDir, fileName).toPath();
     }
 
 }
