@@ -36,7 +36,7 @@ public class ComputeSequencia extends AbstractCompute {
             this.sequenciasPercentos[i] = (sequenciasJogos[i] * 100.0d) / qtdJogos;
         }
 
-        // contabiliza as sequencias de cada sorteio dos concursos:
+        // contabiliza as sequencias repetidas de cada sorteio dos concursos:
         int[] ultimasSequenciasRepetidas = new int[qtdItens];
         this.qtdSequenciasUltimoConcurso = -1;
         this.qtdSequenciasPenultimoConcurso = -1;

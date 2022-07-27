@@ -35,7 +35,7 @@ public class ComputeParidade extends AbstractCompute {
             this.paridadesPercentos[i] = (paridadesJogos[i] * 100.0d) / qtdJogos;
         }
 
-        // contabiliza os pares (e impares) de cada sorteio dos concursos:
+        // contabiliza os pares (e impares) repetidos de cada sorteio dos concursos:
         int[] ultimasParidadesRepetidas = new int[qtdItens];
         this.qtdParesUltimoConcurso = -1;
         this.qtdParesPenultimoConcurso = -1;

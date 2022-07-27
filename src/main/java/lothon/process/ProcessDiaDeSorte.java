@@ -1,9 +1,8 @@
 package lothon.process;
 
 import static lothon.util.Eve.*;
-import lothon.compute.AbstractCompute;
-import lothon.compute.ComputeParidade;
-import lothon.compute.ComputeSequencia;
+
+import lothon.compute.*;
 import lothon.domain.Jogo;
 import lothon.domain.Loteria;
 import lothon.util.Infra;
@@ -25,7 +24,9 @@ public class ProcessDiaDeSorte extends AbstractProcess {
 
     private AbstractCompute[] getComputeChain(int[][] sorteios) {
         return new AbstractCompute[]{new ComputeParidade(sorteios, DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas, THRESHOLD),
-                                     new ComputeSequencia(sorteios, DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas, THRESHOLD)};
+                                     new ComputeSequencia(sorteios, DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas, THRESHOLD),
+                                     new ComputeEspacamento(sorteios, DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas, THRESHOLD),
+                                     new ComputeMediana(sorteios, DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas, THRESHOLD)};
     }
 
     public void run() {

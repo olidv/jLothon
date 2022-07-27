@@ -60,6 +60,7 @@ public class Main {
             try {
                 process.start();
                 process.join();
+                break;
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }

@@ -4,6 +4,40 @@ import java.math.BigInteger;
 
 public final class Stats {
 
+    public static int calcMediana(int[] dezenas) {
+        // valida o parametro:
+        if (dezenas == null || dezenas.length == 0) {
+            return 0;
+        }
+
+        // primeiro calcula a soma das raizes dos numeros:
+        int qtdDezenas = dezenas.length;
+        double soma = 0.0;
+        for (final int dezena : dezenas) {
+            soma += Math.sqrt(dezena);
+        }
+
+        return (int) Math.round(soma / qtdDezenas);
+    }
+
+    public static int countEspacos(int[] dezenas) {
+        // valida o parametro:
+        if (dezenas == null || dezenas.length == 0) {
+            return 0;
+        }
+
+        // calcula o espacamento medio entre cada bola:
+        int qtdLacunas = dezenas.length - 1;
+        int soma = 0;
+        int dezAnterior = dezenas[0];
+        for (final int dezena : dezenas) {
+            soma += dezena - dezAnterior;
+            dezAnterior = dezena;
+        }
+
+        return soma / qtdLacunas;
+    }
+
     public static int countSequencias(int[] dezenas) {
         // valida o parametro:
         if (dezenas == null || dezenas.length == 0) {
