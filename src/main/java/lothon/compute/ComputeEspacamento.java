@@ -1,5 +1,6 @@
 package lothon.compute;
 
+import lothon.domain.Loteria;
 import lothon.util.Stats;
 
 import static lothon.util.Eve.toRedutor;
@@ -11,33 +12,33 @@ public class ComputeEspacamento extends AbstractCompute {
     private int qtdEspacosUltimoConcurso;
     private int qtdEspacosPenultimoConcurso;
 
-    public ComputeEspacamento(int[][] sorteios, int qtdDezenas, int qtdBolas, int threshold) {
-        super(sorteios, qtdDezenas, qtdBolas, threshold);
+    public ComputeEspacamento(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
-        // numero de itens/espacamentos deve compensar pelo primeiro item do array ser 0:
-        int qtdItens = (this.qtdDezenas / (this.qtdBolas - 1)) + 1;
+        // inicializa variaveis de controle e monitoramento:
+        this.qtdZerados = 0;
+
+        // numero maximo de espacos deve considerar que a soma dos espacos eh o total de dezenas:
+        int qtdItens = this.qtdDezenas / (this.qtdBolas - 1);
 
         // efetua analise de todas as combinacoes de jogos da loteria:
         int[][] jogos = Stats.geraCombinacoes(this.qtdDezenas, this.qtdBolas);
         int qtdJogos = jogos.length;
 
         // contabiliza espacos em cada combinacao de jogo:
-        int[] espacamentosJogos = new int[qtdItens];
+        int[] espacamentosJogos = Stats.newArrayInt(qtdItens);
         for (final int[] jogo : jogos) {
             int qtdEspacos = Stats.countEspacos(jogo);
             espacamentosJogos[qtdEspacos]++;
         }
 
         // contabiliza o percentual dos espacamentos:
-        this.espacamentosPercentos = new double[qtdItens];
-        for (int i = 0; i < qtdItens; i++) {
-            this.espacamentosPercentos[i] = (espacamentosJogos[i] * 100.0d) / qtdJogos;
-        }
+        this.espacamentosPercentos = Stats.toPercentos(espacamentosJogos, qtdJogos);
 
         // contabiliza os espacos repetidos em cada sorteio dos concursos:
-        int[] ultimosEspacamentosRepetidas = new int[qtdItens];
+        int[] ultimosEspacamentosRepetidas = Stats.newArrayInt(qtdItens);
         this.qtdEspacosUltimoConcurso = -1;
         this.qtdEspacosPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
@@ -52,10 +53,7 @@ public class ComputeEspacamento extends AbstractCompute {
         }
 
         // contabiliza o percentual dos ultimos espacamentos:
-        this.ultimosEspacamentosPercentos = new double[qtdItens];
-        for (int i = 0; i < qtdItens; i++) {
-            this.ultimosEspacamentosPercentos[i] = (ultimosEspacamentosRepetidas[i] * 100.0d) / this.qtdSorteios;
-        }
+        this.ultimosEspacamentosPercentos = Stats.toPercentos(ultimosEspacamentosRepetidas, this.qtdSorteios);
     }
 
     public double eval(int ordinal, int[] jogo) {
@@ -65,6 +63,7 @@ public class ComputeEspacamento extends AbstractCompute {
 
         // ignora valores muito baixos de probabilidade:
         if (percent < this.threshold) {
+            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
             return 0;
         }
 
@@ -81,6 +80,7 @@ public class ComputeEspacamento extends AbstractCompute {
         // se repetiu apenas o ultimo, obtem a probabilidade de repeticao do ultimo espacamento:
         double percentRepetida = this.ultimosEspacamentosPercentos[qtdEspacos];
         if (percentRepetida < 1) {  // baixa probabilidade pode ser descartada
+            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
             return 0;
         } else {  // reduz a probabilidade porque esse jogo vai repetir o espacamento:
             return fatorPercent * toRedutor(percentRepetida);

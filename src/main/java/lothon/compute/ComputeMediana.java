@@ -1,5 +1,6 @@
 package lothon.compute;
 
+import lothon.domain.Loteria;
 import lothon.util.Stats;
 
 import static lothon.util.Eve.toRedutor;
@@ -11,33 +12,33 @@ public class ComputeMediana extends AbstractCompute {
     private int valMedianaUltimoConcurso;
     private int valMedianaPenultimoConcurso;
 
-    public ComputeMediana(int[][] sorteios, int qtdDezenas, int qtdBolas, int threshold) {
-        super(sorteios, qtdDezenas, qtdBolas, threshold);
+    public ComputeMediana(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
+        // inicializa variaveis de controle e monitoramento:
+        this.qtdZerados = 0;
+
         // numero de itens/medianas vai depender do valor da ultima dezena:
-        int qtdItens = (int) Math.round(Math.sqrt(this.qtdDezenas)) + 1;
+        int qtdItens = (int) Math.round(Math.sqrt(this.qtdDezenas));
 
         // efetua analise de todas as combinacoes de jogos da loteria:
         int[][] jogos = Stats.geraCombinacoes(this.qtdDezenas, this.qtdBolas);
         int qtdJogos = jogos.length;
 
         // calcula a mediana de cada combinacao de jogo:
-        int[] medianasJogos = new int[qtdItens];
+        int[] medianasJogos = Stats.newArrayInt(qtdItens);
         for (final int[] jogo : jogos) {
             int valMediana = Stats.calcMediana(jogo);
             medianasJogos[valMediana]++;
         }
 
         // calcula o percentual das medianas:
-        this.medianasPercentos = new double[qtdItens];
-        for (int i = 0; i < qtdItens; i++) {
-            this.medianasPercentos[i] = (medianasJogos[i] * 100.0d) / qtdJogos;
-        }
+        this.medianasPercentos = Stats.toPercentos(medianasJogos, qtdJogos);
 
         // calcula a mediana repetida de cada sorteio dos concursos:
-        int[] ultimasMedianasRepetidas = new int[qtdItens];
+        int[] ultimasMedianasRepetidas = Stats.newArrayInt(qtdItens);
         this.valMedianaUltimoConcurso = -1;
         this.valMedianaPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
@@ -52,10 +53,7 @@ public class ComputeMediana extends AbstractCompute {
         }
 
         // contabiliza o percentual das ultimas medianas:
-        this.ultimasMedianasPercentos = new double[qtdItens];
-        for (int i = 0; i < qtdItens; i++) {
-            this.ultimasMedianasPercentos[i] = (ultimasMedianasRepetidas[i] * 100.0d) / this.qtdSorteios;
-        }
+        this.ultimasMedianasPercentos = Stats.toPercentos(ultimasMedianasRepetidas, this.qtdSorteios);
     }
 
     public double eval(int ordinal, int[] jogo) {
@@ -65,6 +63,7 @@ public class ComputeMediana extends AbstractCompute {
 
         // ignora valores muito baixos de probabilidade:
         if (percent < this.threshold) {
+            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
             return 0;
         }
 
@@ -81,6 +80,7 @@ public class ComputeMediana extends AbstractCompute {
         // se repetiu apenas o ultimo, obtem a probabilidade de repeticao da ultima mediana:
         double percentRepetida = this.ultimasMedianasPercentos[valMediana];
         if (percentRepetida < 1) {  // baixa probabilidade pode ser descartada
+            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
             return 0;
         } else {  // reduz a probabilidade porque esse jogo vai repetir a mediana:
             return fatorPercent * toRedutor(percentRepetida);

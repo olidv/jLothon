@@ -50,10 +50,9 @@ public class Main {
         }
 
         // informacoes para debug:
-        print(">> Diretorio Corrente = {0}", System.getProperty("user.dir"));
-        print(">> Diretorio de Dados = {0}", dataDir.getAbsolutePath());
-        print(">> Primeiro Arquivo CSV = {0}", dataFiles[0]);
-        print("\n\n");
+        print(">> Diretorio Corrente = {0}.", System.getProperty("user.dir"));
+        print(">> Diretorio de Dados = {0}.", dataDir.getAbsolutePath());
+        print(">> Primeiro Arquivo CSV = {0}.\n", dataFiles[0]);
 
         // Inicia o processamento em paralelo para cada loteria:
         for (final AbstractProcess process : getProcessChain(dataDir))
@@ -69,7 +68,7 @@ public class Main {
         millis = System.currentTimeMillis() - millis;
         long min = TimeUnit.MILLISECONDS.toMinutes(millis);
         long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
-        print("\n\n>> TEMPO DE PROCESSAMENTO: {0} min, {1} seg", min, sec);
+        print("\n>> TEMPO DE PROCESSAMENTO: {0} min, {1} seg.", min, sec);
 
         // Encerra o processamento informando que foi realizado com sucesso:
         System.exit(0);
