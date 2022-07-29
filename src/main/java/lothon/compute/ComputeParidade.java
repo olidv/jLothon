@@ -1,16 +1,9 @@
 package lothon.compute;
 
-import static lothon.util.Eve.*;
-
 import lothon.domain.Loteria;
 import lothon.util.Stats;
 
 public class ComputeParidade extends AbstractCompute {
-
-    private double[] paridadesPercentos;
-    private double[] ultimasParidadesPercentos;
-    private int qtdParesUltimoConcurso;
-    private int qtdParesPenultimoConcurso;
 
     public ComputeParidade(Loteria loteria, int[][] sorteios, int threshold) {
         super(loteria, sorteios, threshold);
@@ -35,56 +28,29 @@ public class ComputeParidade extends AbstractCompute {
         }
 
         // contabiliza o percentual das paridades:
-        this.paridadesPercentos = Stats.toPercentos(paridadesJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(paridadesJogos, qtdJogos);
 
         // contabiliza os pares (e impares) repetidos de cada sorteio dos concursos:
         int[] ultimasParidadesRepetidas = Stats.newArrayInt(qtdItens);
-        this.qtdParesUltimoConcurso = -1;
-        this.qtdParesPenultimoConcurso = -1;
+        this.valorUltimoConcurso = -1;
+        this.valorPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
             int qtdPares = Stats.countPares(sorteio);
             // verifica se repetiu a paridade do ultimo concurso:
-            if (qtdPares == this.qtdParesUltimoConcurso) {
+            if (qtdPares == this.valorUltimoConcurso) {
                 ultimasParidadesRepetidas[qtdPares]++;
             }
             // atualiza ambos flags, para ultimo e penultimo concursos
-            this.qtdParesPenultimoConcurso = this.qtdParesUltimoConcurso;
-            this.qtdParesUltimoConcurso = qtdPares;
+            this.valorPenultimoConcurso = this.valorUltimoConcurso;
+            this.valorUltimoConcurso = qtdPares;
         }
 
         // contabiliza o percentual das ultimas paridades:
-        this.ultimasParidadesPercentos = Stats.toPercentos(ultimasParidadesRepetidas, this.qtdSorteios);
+        this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasParidadesRepetidas, this.qtdSorteios);
     }
 
-    public double eval(int ordinal, int[] jogo) {
-        // a probabilidade de acerto depende do numero de pares no jogo:
-        int qtdPares = Stats.countPares(jogo);
-        double percent = this.paridadesPercentos[qtdPares];
-
-        // ignora valores muito baixos de probabilidade:
-        if (percent < this.threshold) {
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        }
-
-        // calcula o fator de percentual (metrica), para facilitar o calculo seguinte:
-        double fatorPercent = toRedutor(percent);
-
-        // verifica se esse jogo repetiu a paridade do ultimo e penultimo concursos:
-        if (qtdPares != this.qtdParesUltimoConcurso) {
-            return fatorPercent;  // nao repetiu, ja pode pular fora
-        } else if (qtdPares == this.qtdParesPenultimoConcurso) {
-            return fatorPercent * 0.1;  // pouco provavel de repetir mais de 2 ou 3 vezes
-        }
-
-        // se repetiu apenas o ultimo, obtem a probabilidade de repeticao da ultima paridade:
-        double percentRepetida = this.ultimasParidadesPercentos[qtdPares];
-        if (percentRepetida < 1) {  // baixa probabilidade pode ser descartada
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        } else {  // reduz a probabilidade porque esse jogo vai repetir a paridade:
-            return fatorPercent * toRedutor(percentRepetida);
-        }
+    public int rateJogo(int ordinal, int[] jogo) {
+        return Stats.countPares(jogo);
     }
 
 }

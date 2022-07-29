@@ -22,20 +22,6 @@ public class ProcessDiaDeSorte extends AbstractProcess {
         super(dataDir);
     }
 
-    private AbstractCompute[] getComputeChain(int[][] sorteios) {
-        return new AbstractCompute[]{
-                new ComputeMatricial(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeEspacamento(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeSequencia(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeParidade(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeFrequencia(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeAusencia(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeMediana(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeRecorrencia(DIA_DE_SORTE, sorteios, THRESHOLD),
-                new ComputeRepetencia(DIA_DE_SORTE, sorteios, THRESHOLD)
-        };
-    }
-
     public void run() {
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
         Path csvInput = DIA_DE_SORTE.getCsvInput(this.dataDir);
@@ -47,14 +33,7 @@ public class ProcessDiaDeSorte extends AbstractProcess {
         }
 
         // Efetua a execucao de cada processo de analise em sequencia (chain) para coleta de dados:
-        AbstractCompute[] computeChain = getComputeChain(sorteios);
-        for (final AbstractCompute compute : computeChain)
-            try {
-                compute.start();
-                compute.join();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+        AbstractCompute[] computeChain = this.initComputeChain(DIA_DE_SORTE, sorteios, THRESHOLD);
 
         // gera as combinacoes de jogos da loteria:
         int[][] jogos = Stats.geraCombinacoes(DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas);
@@ -65,9 +44,6 @@ public class ProcessDiaDeSorte extends AbstractProcess {
         int qtdZerados = 0;
         for (final int[] jogo : jogos) {
             ordinal++;  // primeiro jogo ira comecar do #1
-//            if (ordinal % 100000 == 0) {
-//                print("{0}: ordinal = {1}", DIA_DE_SORTE.nome, ordinal);
-//            }
 
             // executa a avaliacao do jogo e desconsidera:
             double fator = 1.0;
@@ -84,7 +60,7 @@ public class ProcessDiaDeSorte extends AbstractProcess {
             print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
 
         // agora sim, efetua processamento dos sorteios da loteria:
-        List<Jogo> jogosComputados = new ArrayList<>(qtdJogos);
+        this.jogosComputados = new ArrayList<>(qtdJogos);
         ordinal = qtdZerados = 0;
         for (final int[] jogo : jogos) {
             ordinal++;  // primeiro jogo ira comecar do #1
@@ -106,13 +82,18 @@ public class ProcessDiaDeSorte extends AbstractProcess {
             if (fator == 0.0) {
                 qtdZerados++;
             } else {
-                jogosComputados.add(new Jogo(ordinal, jogo, fator));
+                this.jogosComputados.add(new Jogo(ordinal, jogo, fator));
             }
         }
-
-        int qtdInclusos = jogosComputados.size();
+        int qtdInclusos = this.jogosComputados.size();
         print("\n{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", DIA_DE_SORTE.nome, qtdJogos);
         print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", DIA_DE_SORTE.nome, qtdZerados, qtdInclusos);
+
+        // teste para verificar o numero de apostas sem muitas repeticoes de dezenas entre si:
+        for (int i = 0; i < 5 /*DIA_DE_SORTE.qtdBolas*/; i++) {  // quantidade de recorrencias
+            List<Jogo> jogosBolao = this.relacionarJogos(i);
+            print("*** MAX-RECORRENCIAS = {0} ... #JOGOS = {1}", i, jogosBolao.size());
+        }
 
         // ao final, salva os jogos computados em arquivo CSV:
         Path csvOuput = DIA_DE_SORTE.getCsvOuput(this.dataDir);

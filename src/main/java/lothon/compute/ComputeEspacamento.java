@@ -3,14 +3,7 @@ package lothon.compute;
 import lothon.domain.Loteria;
 import lothon.util.Stats;
 
-import static lothon.util.Eve.toRedutor;
-
 public class ComputeEspacamento extends AbstractCompute {
-
-    private double[] espacamentosPercentos;
-    private double[] ultimosEspacamentosPercentos;
-    private int qtdEspacosUltimoConcurso;
-    private int qtdEspacosPenultimoConcurso;
 
     public ComputeEspacamento(Loteria loteria, int[][] sorteios, int threshold) {
         super(loteria, sorteios, threshold);
@@ -35,56 +28,29 @@ public class ComputeEspacamento extends AbstractCompute {
         }
 
         // contabiliza o percentual dos espacamentos:
-        this.espacamentosPercentos = Stats.toPercentos(espacamentosJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(espacamentosJogos, qtdJogos);
 
         // contabiliza os espacos repetidos em cada sorteio dos concursos:
         int[] ultimosEspacamentosRepetidas = Stats.newArrayInt(qtdItens);
-        this.qtdEspacosUltimoConcurso = -1;
-        this.qtdEspacosPenultimoConcurso = -1;
+        this.valorUltimoConcurso = -1;
+        this.valorPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
             int qtdEspacos = Stats.countEspacos(sorteio);
             // verifica se repetiu a espacamento do ultimo concurso:
-            if (qtdEspacos == this.qtdEspacosUltimoConcurso) {
+            if (qtdEspacos == this.valorUltimoConcurso) {
                 ultimosEspacamentosRepetidas[qtdEspacos]++;
             }
             // atualiza ambos flags, para ultimo e penultimo concursos
-            this.qtdEspacosPenultimoConcurso = this.qtdEspacosUltimoConcurso;
-            this.qtdEspacosUltimoConcurso = qtdEspacos;
+            this.valorPenultimoConcurso = this.valorUltimoConcurso;
+            this.valorUltimoConcurso = qtdEspacos;
         }
 
         // contabiliza o percentual dos ultimos espacamentos:
-        this.ultimosEspacamentosPercentos = Stats.toPercentos(ultimosEspacamentosRepetidas, this.qtdSorteios);
+        this.ultimosSorteiosPercentos = Stats.toPercentos(ultimosEspacamentosRepetidas, this.qtdSorteios);
     }
 
-    public double eval(int ordinal, int[] jogo) {
-        // a probabilidade de acerto depende do numero de espacos no jogo:
-        int qtdEspacos = Stats.countEspacos(jogo);
-        double percent = this.espacamentosPercentos[qtdEspacos];
-
-        // ignora valores muito baixos de probabilidade:
-        if (percent < this.threshold) {
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        }
-
-        // calcula o fator de percentual (metrica), para facilitar o calculo seguinte:
-        double fatorPercent = toRedutor(percent);
-
-        // verifica se esse jogo repetiu a espacamento do ultimo e penultimo concursos:
-        if (qtdEspacos != this.qtdEspacosUltimoConcurso) {
-            return fatorPercent;  // nao repetiu, ja pode pular fora
-        } else if (qtdEspacos == this.qtdEspacosPenultimoConcurso) {
-            return fatorPercent * 0.1;  // pouco provavel de repetir mais de 2 ou 3 vezes
-        }
-
-        // se repetiu apenas o ultimo, obtem a probabilidade de repeticao do ultimo espacamento:
-        double percentRepetida = this.ultimosEspacamentosPercentos[qtdEspacos];
-        if (percentRepetida < 1) {  // baixa probabilidade pode ser descartada
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        } else {  // reduz a probabilidade porque esse jogo vai repetir o espacamento:
-            return fatorPercent * toRedutor(percentRepetida);
-        }
+    public int rateJogo(int ordinal, int[] jogo) {
+        return Stats.countEspacos(jogo);
     }
 
 }

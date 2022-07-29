@@ -3,14 +3,7 @@ package lothon.compute;
 import lothon.domain.Loteria;
 import lothon.util.Stats;
 
-import static lothon.util.Eve.toRedutor;
-
 public class ComputeMatricial extends AbstractCompute {
-
-    private double[] matrizesPercentos;
-    private double[] ultimasMatrizesPercentos;
-    private int valMatrizUltimoConcurso;
-    private int valMatrizPenultimoConcurso;
 
     public ComputeMatricial(Loteria loteria, int[][] sorteios, int threshold) {
         super(loteria, sorteios, threshold);
@@ -36,57 +29,30 @@ public class ComputeMatricial extends AbstractCompute {
         }
 
         // contabiliza o percentual das matrizes:
-        this.matrizesPercentos = Stats.toPercentos(matrizesJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(matrizesJogos, qtdJogos);
 
         // contabiliza as matrizes repetidas em cada sorteio dos concursos:
         int[] ultimasMatrizesRepetidas = Stats.newArrayInt(qtdItens);
-        this.valMatrizUltimoConcurso = -1;
-        this.valMatrizPenultimoConcurso = -1;
+        this.valorUltimoConcurso = -1;
+        this.valorPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
             // calculo da matriz (maximo de colunas e linhas):
             int valMaxMatriz = Stats.maxColunas(sorteio) + Stats.maxLinhas(sorteio);
             // verifica se repetiu a matriz do ultimo concurso:
-            if (valMaxMatriz == this.valMatrizUltimoConcurso) {
+            if (valMaxMatriz == this.valorUltimoConcurso) {
                 ultimasMatrizesRepetidas[valMaxMatriz]++;
             }
             // atualiza ambos flags, para ultimo e penultimo concursos
-            this.valMatrizPenultimoConcurso = this.valMatrizUltimoConcurso;
-            this.valMatrizUltimoConcurso = valMaxMatriz;
+            this.valorPenultimoConcurso = this.valorUltimoConcurso;
+            this.valorUltimoConcurso = valMaxMatriz;
         }
 
         // contabiliza o percentual das ultimas matrizes:
-        this.ultimasMatrizesPercentos = Stats.toPercentos(ultimasMatrizesRepetidas, this.qtdSorteios);
+        this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasMatrizesRepetidas, this.qtdSorteios);
     }
 
-    public double eval(int ordinal, int[] jogo) {
-        // probabilidade de acerto depende do numero maximo de colunas e linhas do jogo:
-        int valMaxMatriz = Stats.maxColunas(jogo) + Stats.maxLinhas(jogo);
-        double percent = this.matrizesPercentos[valMaxMatriz];
-
-        // ignora valores muito baixos de probabilidade:
-        if (percent < this.threshold) {
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        }
-
-        // calcula o fator de percentual (metrica), para facilitar o calculo seguinte:
-        double fatorPercent = toRedutor(percent);
-
-        // verifica se esse jogo repetiu a matriz do ultimo e penultimo concursos:
-        if (valMaxMatriz != this.valMatrizUltimoConcurso) {
-            return fatorPercent;  // nao repetiu, ja pode pular fora
-        } else if (valMaxMatriz == this.valMatrizPenultimoConcurso) {
-            return fatorPercent * 0.1;  // pouco provavel de repetir mais de 2 ou 3 vezes
-        }
-
-        // se repetiu apenas o ultimo, obtem a probabilidade de repeticao da ultima matriz:
-        double percentRepetida = this.ultimasMatrizesPercentos[valMaxMatriz];
-        if (percentRepetida < 1) {  // baixa probabilidade pode ser descartada
-            this.qtdZerados++;  // contabiliza para posterior acompanhamento...
-            return 0;
-        } else {  // reduz a probabilidade porque esse jogo vai repetir a matriz:
-            return fatorPercent * toRedutor(percentRepetida);
-        }
+    public int rateJogo(int ordinal, int[] jogo) {
+        return Stats.maxColunas(jogo) + Stats.maxLinhas(jogo);
     }
 
 }
