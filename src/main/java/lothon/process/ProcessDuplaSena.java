@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static lothon.util.Eve.print;
 
@@ -23,6 +24,9 @@ public class ProcessDuplaSena extends AbstractProcess {
     }
 
     public void run() {
+        // Contabiliza o tempo gasto.
+        long millis = System.currentTimeMillis();
+
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
         Path csvInput = DUPLA_SENA.getCsvInput(this.dataDir);
         print("\n\n{0}: Arquivo CSV com sorteios = {1}.", DUPLA_SENA.nome, csvInput.toAbsolutePath());
@@ -54,7 +58,7 @@ public class ProcessDuplaSena extends AbstractProcess {
             if (fator == 0.0)
                 qtdZerados++;
         }
-        print("\n{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
+        print("{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
                 DUPLA_SENA.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
         for (final AbstractCompute compute : computeChain)
             print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
@@ -90,15 +94,21 @@ public class ProcessDuplaSena extends AbstractProcess {
         print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", DUPLA_SENA.nome, qtdZerados, qtdInclusos);
 
         // teste para verificar o numero de apostas sem muitas repeticoes de dezenas entre si:
-        for (int i = 0; i < DUPLA_SENA.qtdBolas-2; i++) {  // quantidade de recorrencias
-            List<Jogo> jogosBolao = this.relacionarJogos(i);
-            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", DUPLA_SENA.nome, i, jogosBolao.size());
-        }
+//        for (int i = 0; i < DUPLA_SENA.qtdBolas-2; i++) {  // quantidade de recorrencias
+//            List<Jogo> jogosBolao = this.relacionarJogos(i);
+//            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", DUPLA_SENA.nome, i, jogosBolao.size());
+//        }
 
         // ao final, salva os jogos computados em arquivo CSV:
         Path csvOuput = DUPLA_SENA.getCsvOuput(this.dataDir);
         Infra.saveJogos(csvOuput, jogosComputados);
-        print("\n{0}: Arquivo CSV com jogos computados = {1}.", DUPLA_SENA.nome, csvOuput.toAbsolutePath());
+        print("{0}: Arquivo CSV com jogos computados = {1}.", DUPLA_SENA.nome, csvOuput.toAbsolutePath());
+
+        // Contabiliza e apresenta o tempo total gasto no processamento:
+        millis = System.currentTimeMillis() - millis;
+        long min = TimeUnit.MILLISECONDS.toMinutes(millis);
+        long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
+        print("{0}: TEMPO DE PROCESSAMENTO: {1} min, {2} seg.", DUPLA_SENA.nome, min, sec);
     }
 
 }
