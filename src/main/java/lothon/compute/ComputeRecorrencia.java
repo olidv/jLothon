@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeRecorrencia extends AbstractCompute {
 
-    public ComputeRecorrencia(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeRecorrencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     public void run() {

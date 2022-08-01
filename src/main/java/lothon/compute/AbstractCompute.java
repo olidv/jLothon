@@ -7,10 +7,12 @@ import static lothon.util.Eve.toRedutor;
 public abstract class AbstractCompute extends Thread {
 
     protected final Loteria loteria;
+    protected final int[][] jogos;
     protected final int[][] sorteios;
     protected final int threshold;
 
     // propriedades para auxiliar na computacao dos sorteios:
+    protected final int qtdJogos;
     protected final int qtdSorteios;
     protected final int qtdDezenas;
     protected final int qtdBolas;
@@ -23,12 +25,14 @@ public abstract class AbstractCompute extends Thread {
     protected int valorUltimoConcurso;
     protected int valorPenultimoConcurso;
 
-    public AbstractCompute(Loteria loteria, int[][] sorteios, int threshold) {
+    public AbstractCompute(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
         this.loteria = loteria;
+        this.jogos = jogos;
         this.sorteios = sorteios;
         this.threshold = threshold;
 
         // aproveita para inicializar as propriedades auxiliares:
+        this.qtdJogos = jogos.length;
         this.qtdSorteios = sorteios.length;
         this.qtdDezenas = loteria.qtdDezenas;
         this.qtdBolas = loteria.qtdBolas;

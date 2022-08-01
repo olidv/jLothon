@@ -1,8 +1,6 @@
 package lothon.process;
 
-import static lothon.util.Eve.*;
-
-import lothon.compute.*;
+import lothon.compute.AbstractCompute;
 import lothon.domain.Jogo;
 import lothon.domain.Loteria;
 import lothon.util.Infra;
@@ -13,31 +11,33 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessDiaDeSorte extends AbstractProcess {
+import static lothon.util.Eve.print;
 
-    private static final Loteria DIA_DE_SORTE = Loteria.DIA_DE_SORTE;
+public class ProcessMegaSena extends AbstractProcess {
+
+    private static final Loteria MEGA_SENA = Loteria.MEGA_SENA;
     private static final int THRESHOLD = 10;
 
-    public ProcessDiaDeSorte(File dataDir) {
+    public ProcessMegaSena(File dataDir) {
         super(dataDir);
     }
 
     public void run() {
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
-        Path csvInput = DIA_DE_SORTE.getCsvInput(this.dataDir);
-        print("\n\n{0}: Arquivo CSV com sorteios = {1}.", DIA_DE_SORTE.nome, csvInput.toAbsolutePath());
+        Path csvInput = MEGA_SENA.getCsvInput(this.dataDir);
+        print("\n\n{0}: Arquivo CSV com sorteios = {1}.", MEGA_SENA.nome, csvInput.toAbsolutePath());
         int[][] sorteios = Infra.loadSorteios(csvInput);
         if (sorteios == null || sorteios.length == 0) {
-            print("{0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", DIA_DE_SORTE.nome);
+            print("{0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", MEGA_SENA.nome);
             return;
         }
 
         // efetua a geracao dos jogos de acordo com as combinacoes de jogos da loteria:
-        int[][] jogos = Stats.geraCombinacoes(DIA_DE_SORTE.qtdDezenas, DIA_DE_SORTE.qtdBolas);
+        int[][] jogos = Stats.geraCombinacoes(MEGA_SENA.qtdDezenas, MEGA_SENA.qtdBolas);
         int qtdJogos = jogos.length;
 
         // Efetua a execucao de cada processo de analise em sequencia (chain) para coleta de dados:
-        AbstractCompute[] computeChain = this.initComputeChain(DIA_DE_SORTE, jogos, sorteios, THRESHOLD);
+        AbstractCompute[] computeChain = this.initComputeChain(MEGA_SENA, jogos, sorteios, THRESHOLD);
 
         // processamento preliminar, apenas para saber quantos jogos sao zerados por cada compute:
         int ordinal = 0;
@@ -55,7 +55,7 @@ public class ProcessDiaDeSorte extends AbstractProcess {
                 qtdZerados++;
         }
         print("\n{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
-                DIA_DE_SORTE.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
+                MEGA_SENA.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
         for (final AbstractCompute compute : computeChain)
             print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
 
@@ -86,19 +86,19 @@ public class ProcessDiaDeSorte extends AbstractProcess {
             }
         }
         int qtdInclusos = this.jogosComputados.size();
-        print("\n{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", DIA_DE_SORTE.nome, qtdJogos);
-        print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", DIA_DE_SORTE.nome, qtdZerados, qtdInclusos);
+        print("\n{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", MEGA_SENA.nome, qtdJogos);
+        print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", MEGA_SENA.nome, qtdZerados, qtdInclusos);
 
         // teste para verificar o numero de apostas sem muitas repeticoes de dezenas entre si:
-        for (int i = 0; i < DIA_DE_SORTE.qtdBolas-2; i++) {  // quantidade de recorrencias
+        for (int i = 0; i < MEGA_SENA.qtdBolas-2; i++) {  // quantidade de recorrencias
             List<Jogo> jogosBolao = this.relacionarJogos(i);
-            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", DIA_DE_SORTE.nome, i, jogosBolao.size());
+            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", MEGA_SENA.nome, i, jogosBolao.size());
         }
 
         // ao final, salva os jogos computados em arquivo CSV:
-        Path csvOuput = DIA_DE_SORTE.getCsvOuput(this.dataDir);
+        Path csvOuput = MEGA_SENA.getCsvOuput(this.dataDir);
         Infra.saveJogos(csvOuput, jogosComputados);
-        print("\n{0}: Arquivo CSV com jogos computados = {1}.", DIA_DE_SORTE.nome, csvOuput.toAbsolutePath());
+        print("\n{0}: Arquivo CSV com jogos computados = {1}.", MEGA_SENA.nome, csvOuput.toAbsolutePath());
     }
 
 }

@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeParidade extends AbstractCompute {
 
-    public ComputeParidade(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeParidade(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     public void run() {
@@ -16,19 +16,15 @@ public class ComputeParidade extends AbstractCompute {
         // numero maximo de itens/paridades corresponde ao numero de dezenas sorteadas:
         int qtdItens = this.qtdBolas;
 
-        // efetua analise de todas as combinacoes de jogos da loteria:
-        int[][] jogos = Stats.geraCombinacoes(this.qtdDezenas, this.qtdBolas);
-        int qtdJogos = jogos.length;
-
         // contabiliza pares (e impares) de cada combinacao de jogo:
         int[] paridadesJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : jogos) {
+        for (final int[] jogo : this.jogos) {
             int qtdPares = Stats.countPares(jogo);
             paridadesJogos[qtdPares]++;
         }
 
         // contabiliza o percentual das paridades:
-        this.jogosPercentos = Stats.toPercentos(paridadesJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(paridadesJogos, this.qtdJogos);
 
         // contabiliza os pares (e impares) repetidos de cada sorteio dos concursos:
         int[] ultimasParidadesRepetidas = Stats.newArrayInt(qtdItens);

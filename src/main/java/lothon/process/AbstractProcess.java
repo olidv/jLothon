@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractProcess extends Thread {
+public abstract class AbstractProcess implements Runnable {
 
     protected final File dataDir;
     protected List<Jogo> jogosComputados;
@@ -19,22 +19,22 @@ public abstract class AbstractProcess extends Thread {
         this.jogosComputados = null;
     }
 
-    protected AbstractCompute[] getComputeChain(Loteria loteria, int[][] sorteios, int threshold) {
+    protected AbstractCompute[] getComputeChain(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
         return new AbstractCompute[]{
-                new ComputeMatricial(loteria, sorteios, threshold),
-                new ComputeEspacamento(loteria, sorteios, threshold),
-                new ComputeSequencia(loteria, sorteios, threshold),
-                new ComputeParidade(loteria, sorteios, threshold),
-                new ComputeFrequencia(loteria, sorteios, threshold),
-                new ComputeAusencia(loteria, sorteios, threshold),
-                new ComputeMediana(loteria, sorteios, threshold),
-                new ComputeRecorrencia(loteria, sorteios, threshold),
-                new ComputeRepetencia(loteria, sorteios, threshold)
+                new ComputeMatricial(loteria, jogos, sorteios, threshold),
+                new ComputeEspacamento(loteria, jogos, sorteios, threshold),
+                new ComputeSequencia(loteria, jogos, sorteios, threshold),
+                new ComputeParidade(loteria, jogos, sorteios, threshold),
+                new ComputeFrequencia(loteria, jogos, sorteios, threshold),
+                new ComputeAusencia(loteria, jogos, sorteios, threshold),
+                new ComputeMediana(loteria, jogos, sorteios, threshold),
+                new ComputeRecorrencia(loteria, jogos, sorteios, threshold),
+                new ComputeRepetencia(loteria, jogos, sorteios, threshold)
         };
     }
 
-    protected AbstractCompute[] initComputeChain(Loteria loteria, int[][] sorteios, int threshold) {
-        AbstractCompute[] computeChain = this.getComputeChain(loteria, sorteios, threshold);
+    protected AbstractCompute[] initComputeChain(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        AbstractCompute[] computeChain = this.getComputeChain(loteria, jogos, sorteios, threshold);
 
         for (final AbstractCompute compute : computeChain)
             try {

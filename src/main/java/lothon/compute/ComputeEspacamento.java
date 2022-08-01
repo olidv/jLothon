@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeEspacamento extends AbstractCompute {
 
-    public ComputeEspacamento(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeEspacamento(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     public void run() {
@@ -16,19 +16,15 @@ public class ComputeEspacamento extends AbstractCompute {
         // numero maximo de espacos deve considerar que a soma dos espacos eh o total de dezenas:
         int qtdItens = this.qtdDezenas / (this.qtdBolas - 1);
 
-        // efetua analise de todas as combinacoes de jogos da loteria:
-        int[][] jogos = Stats.geraCombinacoes(this.qtdDezenas, this.qtdBolas);
-        int qtdJogos = jogos.length;
-
         // contabiliza espacos em cada combinacao de jogo:
         int[] espacamentosJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : jogos) {
+        for (final int[] jogo : this.jogos) {
             int qtdEspacos = Stats.countEspacos(jogo);
             espacamentosJogos[qtdEspacos]++;
         }
 
         // contabiliza o percentual dos espacamentos:
-        this.jogosPercentos = Stats.toPercentos(espacamentosJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(espacamentosJogos, this.qtdJogos);
 
         // contabiliza os espacos repetidos em cada sorteio dos concursos:
         int[] ultimosEspacamentosRepetidas = Stats.newArrayInt(qtdItens);

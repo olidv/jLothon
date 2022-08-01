@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeMediana extends AbstractCompute {
 
-    public ComputeMediana(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeMediana(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     public void run() {
@@ -16,26 +16,22 @@ public class ComputeMediana extends AbstractCompute {
         // numero de itens/medianas vai depender do valor da ultima dezena:
         int qtdItens = (int) Math.round(Math.sqrt(this.qtdDezenas));
 
-        // efetua analise de todas as combinacoes de jogos da loteria:
-        int[][] jogos = Stats.geraCombinacoes(this.qtdDezenas, this.qtdBolas);
-        int qtdJogos = jogos.length;
-
         // calcula a mediana de cada combinacao de jogo:
         int[] medianasJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : jogos) {
+        for (final int[] jogo : this.jogos) {
             int valMediana = Stats.calcMediana(jogo);
             medianasJogos[valMediana]++;
         }
 
         // calcula o percentual das medianas:
-        this.jogosPercentos = Stats.toPercentos(medianasJogos, qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(medianasJogos, this.qtdJogos);
 
         // calcula a mediana repetida de cada sorteio dos concursos:
         int[] ultimasMedianasRepetidas = Stats.newArrayInt(qtdItens);
         this.valorUltimoConcurso = -1;
         this.valorPenultimoConcurso = -1;
         for (final int[] sorteio : this.sorteios) {
-            int valMediana = Stats.countPares(sorteio);
+            int valMediana = Stats.calcMediana(sorteio);
             // verifica se repetiu a mediana do ultimo concurso:
             if (valMediana == this.valorUltimoConcurso) {
                 ultimasMedianasRepetidas[valMediana]++;

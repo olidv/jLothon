@@ -10,8 +10,8 @@ public class ComputeAusencia extends AbstractCompute {
 
     private int[] toposDezenas;
 
-    public ComputeAusencia(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeAusencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     private int countToposAusencia(int[] dezenas) {

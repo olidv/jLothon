@@ -10,8 +10,8 @@ public class ComputeFrequencia extends AbstractCompute {
 
     private int[] toposDezenas;
 
-    public ComputeFrequencia(Loteria loteria, int[][] sorteios, int threshold) {
-        super(loteria, sorteios, threshold);
+    public ComputeFrequencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+        super(loteria, jogos, sorteios, threshold);
     }
 
     private int countToposFrequencia(int[] dezenas) {
