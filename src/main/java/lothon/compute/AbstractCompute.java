@@ -9,7 +9,7 @@ public abstract class AbstractCompute extends Thread {
     protected final Loteria loteria;
     protected final int[][] jogos;
     protected final int[][] sorteios;
-    protected final int threshold;
+    protected final int min_threshold;
 
     // propriedades para auxiliar na computacao dos sorteios:
     protected final int qtdJogos;
@@ -29,7 +29,7 @@ public abstract class AbstractCompute extends Thread {
         this.loteria = loteria;
         this.jogos = jogos;
         this.sorteios = sorteios;
-        this.threshold = threshold;
+        this.min_threshold = threshold;
 
         // aproveita para inicializar as propriedades auxiliares:
         this.qtdJogos = jogos.length;
@@ -48,7 +48,7 @@ public abstract class AbstractCompute extends Thread {
         double percent = this.jogosPercentos[valorRate];
 
         // ignora valores muito baixos de probabilidade:
-        if (percent < this.threshold) {
+        if (percent < this.min_threshold) {
             this.qtdZerados++;  // contabiliza para posterior acompanhamento...
             return 0;
         }

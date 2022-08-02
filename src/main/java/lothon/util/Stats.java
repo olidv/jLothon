@@ -93,7 +93,7 @@ public final class Stats {
     }
 
     public static int getLinha(int dezena) {
-        return (int) ((dezena - 1) / 10);
+        return ((dezena - 1) / 10);
     }
 
     public static int maxColunas(int[] dezenas) {

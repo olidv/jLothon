@@ -9,31 +9,27 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
+    /*
+     * Pode ser definido para cada loteria ou de maneira generica:
+     */
+    private static final int MIN_THRESHOLD = 10;
+
     private static void printOpcoes(String msgErro) {
         print(msgErro + '\n');
         print("Para processar os sorteios das loterias e calcular estatisticas:");
-        print("  jLothon  -c  [unidade:][diretorio] \n");
+        print("  jLothon  -c  [unidade:][diretorio] -j [d|l|u|q|m] \n");
         print("\t [unidade:][diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
     }
 
-    private static void runProcessDiaDeSorte(File dataDir) {
-        new ProcessDiaDeSorte(dataDir).run();
-    }
-
-    private static void runProcessLotofacil(File dataDir) {
-        new ProcessLotofacil(dataDir).run();
-    }
-
-    private static void runProcessDuplaSena(File dataDir) {
-        new ProcessDuplaSena(dataDir).run();
-    }
-
-    private static void runProcessQuina(File dataDir) {
-        new ProcessQuina(dataDir).run();
-    }
-
-    private static void runProcessMegaSena(File dataDir) {
-        new ProcessMegaSena(dataDir).run();
+    private static AbstractProcess parseLoteria(String loteria, File dataDir) {
+        return switch (loteria) {
+            case "d" -> new ProcessDiaDeSorte(dataDir, MIN_THRESHOLD);
+            case "l" -> new ProcessLotofacil(dataDir, MIN_THRESHOLD);
+            case "u" -> new ProcessDuplaSena(dataDir, MIN_THRESHOLD);
+            case "q" -> new ProcessQuina(dataDir, MIN_THRESHOLD);
+            case "m" -> new ProcessMegaSena(dataDir, MIN_THRESHOLD);
+            default -> null;
+        };
     }
 
     public static void main(String[] args) {
@@ -41,13 +37,14 @@ public class Main {
         long millis = System.currentTimeMillis();
 
         // Se nao foi fornecido nenhum argumento /configuracao, ja finaliza com erro.
-        if (args == null || args.length < 2) {
+        if (args == null || args.length < 4) {
             printOpcoes("ERRO: A sintaxe do comando esta incorreta.");
             System.exit(1);
         }
 
-        String comando = args[0];
-        if (! "-d".equalsIgnoreCase(comando)) {
+        String opt1 = args[0],
+               opt2 = args[2];
+        if (! "-d".equalsIgnoreCase(opt1) || ! "-j".equalsIgnoreCase(opt2)) {
             printOpcoes("ERRO: Comando para processamento não reconhecido.");
             System.exit(1);
         }
@@ -64,17 +61,21 @@ public class Main {
             System.exit(1);
         }
 
+        String loteria = args[3].toLowerCase();
+        AbstractProcess process = parseLoteria(loteria, dataDir);
+        if (loteria.length() != 1 || !"dluqm".contains(loteria) || process == null) {
+            printOpcoes("ERRO: Codigo da loteria invalido.");
+            System.exit(1);
+        }
+
         // informacoes para debug:
+        print(">> Loteria a processar = {0}.", process.loteria.nome);
         print(">> Diretorio Corrente = {0}.", System.getProperty("user.dir"));
         print(">> Diretorio de Dados = {0}.", dataDir.getAbsolutePath());
         print(">> Primeiro Arquivo CSV = {0}.", dataFiles[0]);
 
-        // Inicia o processamento em sequencia para cada loteria (para evitar estouro de memoria):
-        runProcessDiaDeSorte(dataDir);
-        runProcessLotofacil(dataDir);
-        runProcessDuplaSena(dataDir);
-        runProcessQuina(dataDir);
-        runProcessMegaSena(dataDir);
+        // Inicia o processamento em sequencia para a loteria indicada (para evitar estouro de memoria):
+        process.run();
 
         // Contabiliza e apresenta o tempo total gasto no processamento:
         millis = System.currentTimeMillis() - millis;

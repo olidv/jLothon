@@ -9,18 +9,14 @@ import lothon.util.Stats;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static lothon.util.Eve.print;
 
 public class ProcessDuplaSena extends AbstractProcess {
 
-    private static final Loteria DUPLA_SENA = Loteria.DUPLA_SENA;
-    private static final int THRESHOLD = 10;
-
-    public ProcessDuplaSena(File dataDir) {
-        super(dataDir);
+    public ProcessDuplaSena(File dataDir, int threshold) {
+        super(Loteria.DUPLA_SENA, dataDir, threshold);
     }
 
     public void run() {
@@ -28,20 +24,20 @@ public class ProcessDuplaSena extends AbstractProcess {
         long millis = System.currentTimeMillis();
 
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
-        Path csvInput = DUPLA_SENA.getCsvInput(this.dataDir);
-        print("\n\n{0}: Arquivo CSV com sorteios = {1}.", DUPLA_SENA.nome, csvInput.toAbsolutePath());
+        Path csvInput = this.loteria.getCsvInput(this.dataDir);
+        print("\n\n{0}: Arquivo CSV com sorteios = {1}.", this.loteria.nome, csvInput.toAbsolutePath());
         int[][] sorteios = Infra.loadSorteios(csvInput);
         if (sorteios == null || sorteios.length == 0) {
-            print("{0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", DUPLA_SENA.nome);
+            print("{0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", this.loteria.nome);
             return;
         }
 
         // efetua a geracao dos jogos de acordo com as combinacoes de jogos da loteria:
-        int[][] jogos = Stats.geraCombinacoes(DUPLA_SENA.qtdDezenas, DUPLA_SENA.qtdBolas);
+        int[][] jogos = Stats.geraCombinacoes(this.loteria.qtdDezenas, this.loteria.qtdBolas);
         int qtdJogos = jogos.length;
 
         // Efetua a execucao de cada processo de analise em sequencia (chain) para coleta de dados:
-        AbstractCompute[] computeChain = this.initComputeChain(DUPLA_SENA, jogos, sorteios, THRESHOLD);
+        AbstractCompute[] computeChain = this.initComputeChain(jogos, sorteios, this.min_threshold);
 
         // processamento preliminar, apenas para saber quantos jogos sao zerados por cada compute:
         int ordinal = 0;
@@ -59,7 +55,7 @@ public class ProcessDuplaSena extends AbstractProcess {
                 qtdZerados++;
         }
         print("{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
-                DUPLA_SENA.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
+                this.loteria.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
         for (final AbstractCompute compute : computeChain)
             print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
 
@@ -90,25 +86,25 @@ public class ProcessDuplaSena extends AbstractProcess {
             }
         }
         int qtdInclusos = this.jogosComputados.size();
-        print("\n{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", DUPLA_SENA.nome, qtdJogos);
-        print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", DUPLA_SENA.nome, qtdZerados, qtdInclusos);
+        print("{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", this.loteria.nome, qtdJogos);
+        print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", this.loteria.nome, qtdZerados, qtdInclusos);
 
         // teste para verificar o numero de apostas sem muitas repeticoes de dezenas entre si:
-//        for (int i = 0; i < DUPLA_SENA.qtdBolas-2; i++) {  // quantidade de recorrencias
+//        for (int i = 0; i < this.loteria.qtdBolas-2; i++) {  // quantidade de recorrencias
 //            List<Jogo> jogosBolao = this.relacionarJogos(i);
-//            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", DUPLA_SENA.nome, i, jogosBolao.size());
+//            print("{0}: *** MAX-RECORRENCIAS = {1} ... #JOGOS = {2}", this.loteria.nome, i, jogosBolao.size());
 //        }
 
         // ao final, salva os jogos computados em arquivo CSV:
-        Path csvOuput = DUPLA_SENA.getCsvOuput(this.dataDir);
+        Path csvOuput = this.loteria.getCsvOuput(this.dataDir);
         Infra.saveJogos(csvOuput, jogosComputados);
-        print("{0}: Arquivo CSV com jogos computados = {1}.", DUPLA_SENA.nome, csvOuput.toAbsolutePath());
+        print("{0}: Arquivo CSV com jogos computados = {1}.", this.loteria.nome, csvOuput.toAbsolutePath());
 
         // Contabiliza e apresenta o tempo total gasto no processamento:
         millis = System.currentTimeMillis() - millis;
         long min = TimeUnit.MILLISECONDS.toMinutes(millis);
         long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
-        print("{0}: TEMPO DE PROCESSAMENTO: {1} min, {2} seg.", DUPLA_SENA.nome, min, sec);
+        print("{0}: TEMPO DE PROCESSAMENTO: {1} min, {2} seg.", this.loteria.nome, min, sec);
     }
 
 }
