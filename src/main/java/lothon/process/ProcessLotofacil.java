@@ -9,7 +9,7 @@ import lothon.util.Stats;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 
 import static lothon.util.Eve.print;
 
@@ -21,7 +21,7 @@ public class ProcessLotofacil extends AbstractProcess {
 
     public void run() {
         // Contabiliza o tempo gasto.
-        long millis = System.currentTimeMillis();
+//        long millis = System.currentTimeMillis();
 
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
         Path csvInput = this.loteria.getCsvInput(this.dataDir);
@@ -54,10 +54,10 @@ public class ProcessLotofacil extends AbstractProcess {
             if (fator == 0.0)
                 qtdZerados++;
         }
-        print("{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
-                this.loteria.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
-        for (final AbstractCompute compute : computeChain)
-            print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
+//        print("{0}: Foram zerados {1} jogos; do total {2} sobrou {3}:",
+//                this.loteria.nome, qtdZerados, qtdJogos, qtdJogos - qtdZerados);
+//        for (final AbstractCompute compute : computeChain)
+//            print("\t{0}: qtd-zerados = {1}", compute.getClass().getName(), compute.qtdZerados);
 
         // agora sim, efetua processamento dos sorteios da loteria:
         this.jogosComputados = new ArrayList<>(qtdJogos);
@@ -101,10 +101,10 @@ public class ProcessLotofacil extends AbstractProcess {
         print("{0}: Arquivo CSV com jogos computados = {1}.", this.loteria.nome, csvOuput.toAbsolutePath());
 
         // Contabiliza e apresenta o tempo total gasto no processamento:
-        millis = System.currentTimeMillis() - millis;
-        long min = TimeUnit.MILLISECONDS.toMinutes(millis);
-        long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
-        print("{0}: TEMPO DE PROCESSAMENTO: {1} min, {2} seg.", this.loteria.nome, min, sec);
+//        millis = System.currentTimeMillis() - millis;
+//        long min = TimeUnit.MILLISECONDS.toMinutes(millis);
+//        long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
+//        print("{0}: TEMPO DE PROCESSAMENTO: {1} min, {2} seg.", this.loteria.nome, min, sec);
     }
 
 }

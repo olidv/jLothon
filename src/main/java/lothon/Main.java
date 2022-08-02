@@ -18,7 +18,13 @@ public class Main {
         print(msgErro + '\n');
         print("Para processar os sorteios das loterias e calcular estatisticas:");
         print("  jLothon  -c  [unidade:][diretorio] -j [d|l|u|q|m] \n");
-        print("\t [unidade:][diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
+        print("\t -c [diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
+        print("\t -j [d|l|u|q|m]  Processa a loteria indicada:");
+        print("\t                 d = Dia de Sorte,");
+        print("\t                 l = Lotofacil,");
+        print("\t                 u = Dupla Sena,");
+        print("\t                 q = Quina,");
+        print("\t                 m = Mega-Sena.");
     }
 
     private static AbstractProcess parseLoteria(String loteria, File dataDir) {
