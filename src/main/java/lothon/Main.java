@@ -17,12 +17,12 @@ public class Main {
     private static void printOpcoes(String msgErro) {
         print(msgErro + '\n');
         print("Uso: Para processar os sorteios das loterias e calcular estatisticas");
-        print("  jLothon  -c  [unidade:][diretorio] -j [d|l|u|q|m] \n");
+        print("  jLothon  -c  [unidade:][diretorio] -j [d|l|p|q|m] \n");
         print("\t -c [diretorio]  Especifica o local com os arquivos de sorteios das Loterias");
-        print("\t -j [d|l|u|q|m]  Processa os jogos da loteria indicada:");
+        print("\t -j [d|l|p|q|m]  Processa os jogos da loteria indicada:");
         print("\t                 d = Dia de Sorte");
         print("\t                 l = Lotofacil");
-        print("\t                 u = Dupla Sena");
+        print("\t                 p = Dupla Sena");
         print("\t                 q = Quina");
         print("\t                 m = Mega-Sena");
     }
@@ -31,7 +31,7 @@ public class Main {
         return switch (loteria) {
             case "d" -> new ProcessDiaDeSorte(dataDir, MIN_THRESHOLD);
             case "l" -> new ProcessLotofacil(dataDir, MIN_THRESHOLD);
-            case "u" -> new ProcessDuplaSena(dataDir, MIN_THRESHOLD);
+            case "p" -> new ProcessDuplaSena(dataDir, MIN_THRESHOLD);
             case "q" -> new ProcessQuina(dataDir, MIN_THRESHOLD);
             case "m" -> new ProcessMegaSena(dataDir, MIN_THRESHOLD);
             default -> null;
@@ -69,7 +69,7 @@ public class Main {
 
         String loteria = args[3].toLowerCase();
         AbstractProcess process = parseLoteria(loteria, dataDir);
-        if (loteria.length() != 1 || !"dluqm".contains(loteria) || process == null) {
+        if (loteria.length() != 1 || !"dlpqm".contains(loteria) || process == null) {
             printOpcoes("ERRO: Codigo da loteria invalido.");
             System.exit(1);
         }
