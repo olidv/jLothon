@@ -4,7 +4,7 @@ public class Jogo {
 
     public final int ordinal;
     public final int[] dezenas;
-    public double fator;
+    public final double fator;
 
     public Jogo(int ordinal, int[] dezenas) {
         this.ordinal = ordinal;

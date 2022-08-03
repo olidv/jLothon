@@ -25,10 +25,10 @@ public class ProcessDiaDeSorte extends AbstractProcess {
 
         // Inicia o processamento efetuando a leitura dos arquivos CSV:
         Path csvInput = this.loteria.getCsvInput(this.dataDir);
-        print("\n\n{0}: Arquivo CSV com sorteios = {1}.", this.loteria.nome, csvInput.toAbsolutePath());
+        print("\n>> {0}: Arquivo CSV com sorteios = {1}.", this.loteria.nome, csvInput.toAbsolutePath());
         int[][] sorteios = Infra.loadSorteios(csvInput);
         if (sorteios == null || sorteios.length == 0) {
-            print("{0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", this.loteria.nome);
+            print(">> {0}: Arquivo CSV esta vazio. ERRO: Processo abortado.", this.loteria.nome);
             return;
         }
 
@@ -86,8 +86,8 @@ public class ProcessDiaDeSorte extends AbstractProcess {
             }
         }
         int qtdInclusos = this.jogosComputados.size();
-        print("{0}: Finalizado o processamento de  {1}  combinacoes de jogos.", this.loteria.nome, qtdJogos);
-        print("{0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", this.loteria.nome, qtdZerados, qtdInclusos);
+        print(">> {0}: Finalizado o processamento de  {1}  combinacoes de jogos.", this.loteria.nome, qtdJogos);
+        print(">> {0}: Eliminados (zerados) = {1}  .:.  Considerados (inclusos) = {2}", this.loteria.nome, qtdZerados, qtdInclusos);
 
         // teste para verificar o numero de apostas sem muitas repeticoes de dezenas entre si:
 //        for (int i = 0; i < this.loteria.qtdBolas-2; i++) {  // quantidade de recorrencias
@@ -98,7 +98,7 @@ public class ProcessDiaDeSorte extends AbstractProcess {
         // ao final, salva os jogos computados em arquivo CSV:
         Path csvOuput = this.loteria.getCsvOuput(this.dataDir);
         Infra.saveJogos(csvOuput, jogosComputados);
-        print("{0}: Arquivo CSV com jogos computados = {1}.", this.loteria.nome, csvOuput.toAbsolutePath());
+        print(">> {0}: Arquivo CSV com jogos computados = {1}.", this.loteria.nome, csvOuput.toAbsolutePath());
 
         // Contabiliza e apresenta o tempo total gasto no processamento:
 //        millis = System.currentTimeMillis() - millis;

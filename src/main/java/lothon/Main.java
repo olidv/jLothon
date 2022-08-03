@@ -16,15 +16,15 @@ public class Main {
 
     private static void printOpcoes(String msgErro) {
         print(msgErro + '\n');
-        print("Para processar os sorteios das loterias e calcular estatisticas:");
+        print("Uso: Para processar os sorteios das loterias e calcular estatisticas");
         print("  jLothon  -c  [unidade:][diretorio] -j [d|l|u|q|m] \n");
-        print("\t -c [diretorio]  Especifica o local com os arquivos de sorteios das Loterias.");
-        print("\t -j [d|l|u|q|m]  Processa a loteria indicada:");
-        print("\t                 d = Dia de Sorte,");
-        print("\t                 l = Lotofacil,");
-        print("\t                 u = Dupla Sena,");
-        print("\t                 q = Quina,");
-        print("\t                 m = Mega-Sena.");
+        print("\t -c [diretorio]  Especifica o local com os arquivos de sorteios das Loterias");
+        print("\t -j [d|l|u|q|m]  Processa os jogos da loteria indicada:");
+        print("\t                 d = Dia de Sorte");
+        print("\t                 l = Lotofacil");
+        print("\t                 u = Dupla Sena");
+        print("\t                 q = Quina");
+        print("\t                 m = Mega-Sena");
     }
 
     private static AbstractProcess parseLoteria(String loteria, File dataDir) {
@@ -50,7 +50,7 @@ public class Main {
 
         String opt1 = args[0],
                opt2 = args[2];
-        if (! "-d".equalsIgnoreCase(opt1) || ! "-j".equalsIgnoreCase(opt2)) {
+        if (! "-c".equalsIgnoreCase(opt1) || ! "-j".equalsIgnoreCase(opt2)) {
             printOpcoes("ERRO: Comando para processamento não reconhecido.");
             System.exit(1);
         }
@@ -75,10 +75,10 @@ public class Main {
         }
 
         // informacoes para debug:
-        print(">> Loteria a processar = {0}.", process.loteria.nome);
-        print(">> Diretorio Corrente = {0}.", System.getProperty("user.dir"));
-        print(">> Diretorio de Dados = {0}.", dataDir.getAbsolutePath());
-        print(">> Primeiro Arquivo CSV = {0}.", dataFiles[0]);
+        print("\n>> Loteria a processar = {0}", process.loteria.nome);
+        print(">> Diretorio Corrente = {0}", System.getProperty("user.dir"));
+        print(">> Diretorio de Dados = {0}", dataDir.getAbsolutePath());
+//        print(">> Primeiro Arquivo CSV = {0}.", dataFiles[0]);
 
         // Inicia o processamento em sequencia para a loteria indicada (para evitar estouro de memoria):
         process.run();
@@ -87,7 +87,7 @@ public class Main {
         millis = System.currentTimeMillis() - millis;
         long min = TimeUnit.MILLISECONDS.toMinutes(millis);
         long sec = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(min);
-        print("\n\n>> TEMPO DE PROCESSAMENTO: {0} min, {1} seg.", min, sec);
+        print("\n>> TEMPO DE PROCESSAMENTO: {0} min, {1} seg.\n", min, sec);
 
         // Encerra o processamento informando que foi realizado com sucesso:
         System.exit(0);
