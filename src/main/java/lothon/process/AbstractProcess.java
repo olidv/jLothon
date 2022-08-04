@@ -30,7 +30,8 @@ public abstract class AbstractProcess implements Runnable {
                 new ComputeAusencia(this.loteria, sorteios, threshold),
                 new ComputeFrequencia(this.loteria, sorteios, threshold),
                 new ComputeMediana(this.loteria, sorteios, threshold),
-                new ComputeRepetencia(this.loteria, sorteios, threshold)
+                new ComputeRepetencia(this.loteria, sorteios, threshold),
+                new ComputeConsecutiva(this.loteria, sorteios, threshold)
         };
     }
 

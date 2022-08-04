@@ -6,6 +6,10 @@ public class DuplaSena extends Loteria {
         super("duplasena", "DUPLA-SENA", 'p', 50, 6, 15890700, 10);
     }
 
+    public int[] getConsecutivasJogos() {
+        return new int[]{8145060, 7016955, 682110, 44550, 1980, 45};
+    }
+
     public int[] getEspacamentosJogos() {
         return new int[]{0, 5250, 69825, 312525, 852100, 1729175, 2828125, 3798950, 3979150, 2315600, 0};
     }

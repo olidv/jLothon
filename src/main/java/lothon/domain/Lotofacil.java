@@ -6,6 +6,10 @@ public class Lotofacil extends Loteria {
         super("lotofacil", "LOTOFACIL", 'l', 25, 15, 3268760, 15);
     }
 
+    public int[] getConsecutivasJogos() {
+        return new int[]{0, 9042, 402292, 990110, 866888, 519695, 266805, 125840, 55055, 22022, 7865, 2420, 605, 110, 11};
+    }
+
     public int[] getEspacamentosJogos() {
         return new int[]{0, 3268760};
     }

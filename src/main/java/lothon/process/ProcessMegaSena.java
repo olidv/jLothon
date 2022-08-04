@@ -1,16 +1,16 @@
 package lothon.process;
 
+import static lothon.util.Eve.*;
+
 import lothon.compute.AbstractCompute;
-import lothon.domain.Jogo;
 import lothon.domain.MegaSena;
+import lothon.domain.Jogo;
 import lothon.util.Infra;
 import lothon.util.Stats;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-
-import static lothon.util.Eve.print;
 
 public class ProcessMegaSena extends AbstractProcess {
 

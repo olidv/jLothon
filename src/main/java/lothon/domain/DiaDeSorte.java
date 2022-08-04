@@ -6,6 +6,10 @@ public class DiaDeSorte extends Loteria {
         super("diadesorte", "DIA-DE-SORTE", 'd', 31, 7, 2629575, 10);
     }
 
+    public int[] getConsecutivasJogos() {
+        return new int[]{480700, 1644500, 431250, 65000, 7500, 600, 25};
+    }
+
     public int[] getEspacamentosJogos() {
         return new int[]{0, 9570, 183142, 860021, 1458087, 118755};
     }

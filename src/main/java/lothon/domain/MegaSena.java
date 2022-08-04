@@ -6,6 +6,10 @@ public class MegaSena extends Loteria {
         super("megasena", "MEGA-SENA", 'm', 60, 6, 	50063860, 10);
     }
 
+    public int[] getConsecutivasJogos() {
+        return new int[]{28989675, 19466370, 1523115, 81675, 2970, 55};
+    }
+
     public int[] getEspacamentosJogos() {
         return new int[]{0, 6510, 88585, 408785, 1160860, 2491685, 4423135, 6773960, 9081660, 10524360, 9842685, 5261635, 0};
     }

@@ -6,6 +6,10 @@ public class Quina extends Loteria {
         super("quina", "QUINA",'q', 80, 5, 24040016, 10);
     }
 
+    public int[] getConsecutivasJogos() {
+        return new int[]{18474840, 5342800, 216600, 5700, 76};
+    }
+
     public int[] getEspacamentosJogos() {
         return new int[]{0, 2576, 20656, 68496, 156336, 290320, 472496, 700816, 969136, 1267216, 1580720, 1891216, 2176176, 2408976, 2558896, 2591120, 2466736, 2142736, 1572016, 703376, 0};
     }

@@ -33,6 +33,8 @@ public abstract class Loteria {
         return new File(dataDir, fileName).toPath();
     }
 
+    public abstract int[] getConsecutivasJogos();
+
     public abstract int[] getEspacamentosJogos();
 
     public abstract int[] getMatriciaisJogos();

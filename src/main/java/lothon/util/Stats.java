@@ -225,6 +225,36 @@ public final class Stats {
         return qtdSequencias;
     }
 
+    public static int countConsecutivas(int[] dezenas) {
+        // valida o parametro:
+        if (dezenas == null || dezenas.length == 0) {
+            return 0;
+        }
+
+        // considera que o array ja esta ordenado:
+        int qtdConsecutivas = 0;
+        int qtdSequencias = 0;
+        int seqPosterior = -1;
+        for (final int dezena : dezenas) {
+            if (dezena == seqPosterior) {
+                qtdSequencias++;
+            } else {
+                if (qtdSequencias > qtdConsecutivas) {
+                    qtdConsecutivas = qtdSequencias;
+                }
+                qtdSequencias = 0;
+            }
+            seqPosterior = dezena + 1;
+        }
+
+        // ao final, precisa testar novamente:
+        if (qtdSequencias > qtdConsecutivas) {
+            qtdConsecutivas = qtdSequencias;
+        }
+
+        return qtdConsecutivas;
+    }
+
     public static int countPares(int[] dezenas) {
         // valida o parametro:
         if (dezenas == null || dezenas.length == 0) {

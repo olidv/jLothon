@@ -2,7 +2,7 @@ package lothon.process;
 
 import static lothon.util.Eve.*;
 
-import lothon.compute.*;
+import lothon.compute.AbstractCompute;
 import lothon.domain.DiaDeSorte;
 import lothon.domain.Jogo;
 import lothon.util.Infra;
@@ -70,7 +70,6 @@ public class ProcessDiaDeSorte extends AbstractProcess {
         Path csvOuput = this.loteria.getCsvOuput(this.dataDir);
         Infra.saveJogos(csvOuput, jogosComputados);
         print(">> {0}: Arquivo CSV com jogos computados = {1}.", this.loteria.nome, csvOuput.toAbsolutePath());
-
     }
 
 }
