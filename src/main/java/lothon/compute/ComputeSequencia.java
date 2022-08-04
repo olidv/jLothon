@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeSequencia extends AbstractCompute {
 
-    public ComputeSequencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeSequencia(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
@@ -16,15 +16,8 @@ public class ComputeSequencia extends AbstractCompute {
         // numero de sequencias eh sempre menor que o numero de bolas sorteadas:
         int qtdItens = this.qtdBolas - 1;
 
-        // contabiliza o numero de sequencias de cada combinacao de jogo:
-        int[] sequenciasJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : this.jogos) {
-            int qtdSequencias = Stats.countSequencias(jogo);
-            sequenciasJogos[qtdSequencias]++;
-        }
-
         // contabiliza o percentual das sequencias:
-        this.jogosPercentos = Stats.toPercentos(sequenciasJogos, this.qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(this.loteria.getSequenciasJogos(), this.loteria.qtdJogos);
 
         // contabiliza as sequencias repetidas de cada sorteio dos concursos:
         int[] ultimasSequenciasRepetidas = Stats.newArrayInt(qtdItens);
@@ -45,7 +38,7 @@ public class ComputeSequencia extends AbstractCompute {
         this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasSequenciasRepetidas, this.qtdSorteios);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return Stats.countSequencias(jogo);
     }
 

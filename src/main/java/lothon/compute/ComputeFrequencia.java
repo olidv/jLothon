@@ -10,8 +10,8 @@ public class ComputeFrequencia extends AbstractCompute {
 
     private int[] toposDezenas;
 
-    public ComputeFrequencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeFrequencia(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     private int countToposFrequencia(int[] dezenas) {
@@ -22,12 +22,9 @@ public class ComputeFrequencia extends AbstractCompute {
         // inicializa variaveis de controle e monitoramento:
         this.qtdZerados = 0;
 
-        // numero maximo de topos eh definido em cada loteria:
-        int qtdItens = this.maxTopos;
-
         // contabiliza repetencias de cada sorteio com todos os sorteios anteriores:
-        int[] toposFrequentes = Stats.newArrayInt(qtdItens);
-        int[] ultimosToposRepetidas = Stats.newArrayInt(qtdItens);
+        int[] toposFrequentes = Stats.newArrayInt(this.maxTopos);
+        int[] ultimosToposRepetidas = Stats.newArrayInt(this.maxTopos);
         this.valorUltimoConcurso = -1;
         this.valorPenultimoConcurso = -1;
         List<int[]> sorteiosAnteriores = new ArrayList<>(this.qtdSorteios);
@@ -61,7 +58,7 @@ public class ComputeFrequencia extends AbstractCompute {
         this.toposDezenas = Stats.calcToposFrequencia(this.sorteios, this.qtdDezenas, this.maxTopos);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return this.countToposFrequencia(jogo);
     }
 

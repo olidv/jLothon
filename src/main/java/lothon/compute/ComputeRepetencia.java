@@ -8,8 +8,8 @@ public class ComputeRepetencia extends AbstractCompute {
     // estrutura para avaliacao de jogos combinados da loteria:
     private int[] ultimoSorteio;
 
-    public ComputeRepetencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeRepetencia(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
@@ -46,7 +46,7 @@ public class ComputeRepetencia extends AbstractCompute {
         this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasRepetenciasRepetidas, this.qtdSorteios);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return Stats.countRepetencias(jogo, this.ultimoSorteio);
     }
 

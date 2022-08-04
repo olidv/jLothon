@@ -51,7 +51,7 @@ public class Main {
         String opt1 = args[0],
                opt2 = args[2];
         if (! "-c".equalsIgnoreCase(opt1) || ! "-j".equalsIgnoreCase(opt2)) {
-            printOpcoes("ERRO: Comando para processamento não reconhecido.");
+            printOpcoes("ERRO: Comando para processamento nao reconhecido.");
             System.exit(1);
         }
 

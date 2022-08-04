@@ -2,17 +2,15 @@ package lothon.compute;
 
 import lothon.domain.Loteria;
 
-import static lothon.util.Eve.toRedutor;
+import static lothon.util.Eve.*;
 
 public abstract class AbstractCompute extends Thread {
 
     protected final Loteria loteria;
-    protected final int[][] jogos;
     protected final int[][] sorteios;
     protected final int min_threshold;
 
     // propriedades para auxiliar na computacao dos sorteios:
-    protected final int qtdJogos;
     protected final int qtdSorteios;
     protected final int qtdDezenas;
     protected final int qtdBolas;
@@ -25,14 +23,12 @@ public abstract class AbstractCompute extends Thread {
     protected int valorUltimoConcurso;
     protected int valorPenultimoConcurso;
 
-    public AbstractCompute(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
+    public AbstractCompute(Loteria loteria, int[][] sorteios, int threshold) {
         this.loteria = loteria;
-        this.jogos = jogos;
         this.sorteios = sorteios;
         this.min_threshold = threshold;
 
         // aproveita para inicializar as propriedades auxiliares:
-        this.qtdJogos = jogos.length;
         this.qtdSorteios = sorteios.length;
         this.qtdDezenas = loteria.qtdDezenas;
         this.qtdBolas = loteria.qtdBolas;
@@ -40,11 +36,11 @@ public abstract class AbstractCompute extends Thread {
         this.qtdZerados = 0;
     }
 
-    public abstract int rateJogo(int ordinal, int[] jogo);
+    public abstract int rateJogo(int[] jogo);
 
-    public double eval(int ordinal, int[] jogo) {
+    public double eval(int[] jogo) {
         // a probabilidade de acerto depende do numero de pares no jogo:
-        int valorRate = this.rateJogo(ordinal, jogo);
+        int valorRate = this.rateJogo(jogo);
         double percent = this.jogosPercentos[valorRate];
 
         // ignora valores muito baixos de probabilidade:

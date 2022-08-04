@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeMediana extends AbstractCompute {
 
-    public ComputeMediana(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeMediana(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
@@ -16,15 +16,8 @@ public class ComputeMediana extends AbstractCompute {
         // numero de itens/medianas vai depender do valor da ultima dezena:
         int qtdItens = (int) Math.round(Math.sqrt(this.qtdDezenas));
 
-        // calcula a mediana de cada combinacao de jogo:
-        int[] medianasJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : this.jogos) {
-            int valMediana = Stats.calcMediana(jogo);
-            medianasJogos[valMediana]++;
-        }
-
         // calcula o percentual das medianas:
-        this.jogosPercentos = Stats.toPercentos(medianasJogos, this.qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(this.loteria.getMedianasJogos(), this.loteria.qtdJogos);
 
         // calcula a mediana repetida de cada sorteio dos concursos:
         int[] ultimasMedianasRepetidas = Stats.newArrayInt(qtdItens);
@@ -45,7 +38,7 @@ public class ComputeMediana extends AbstractCompute {
         this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasMedianasRepetidas, this.qtdSorteios);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return Stats.calcMediana(jogo);
     }
 

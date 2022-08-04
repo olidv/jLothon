@@ -10,8 +10,8 @@ public class ComputeAusencia extends AbstractCompute {
 
     private int[] toposDezenas;
 
-    public ComputeAusencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeAusencia(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     private int countToposAusencia(int[] dezenas) {
@@ -22,12 +22,9 @@ public class ComputeAusencia extends AbstractCompute {
         // inicializa variaveis de controle e monitoramento:
         this.qtdZerados = 0;
 
-        // numero maximo de topos eh definido em cada loteria:
-        int qtdItens = this.maxTopos;
-
         // contabiliza repetencias de cada sorteio com todos os sorteios anteriores:
-        int[] toposAusentes = Stats.newArrayInt(qtdItens);
-        int[] ultimosToposRepetidas = Stats.newArrayInt(qtdItens);
+        int[] toposAusentes = Stats.newArrayInt(this.maxTopos);
+        int[] ultimosToposRepetidas = Stats.newArrayInt(this.maxTopos);
         this.valorUltimoConcurso = -1;
         this.valorPenultimoConcurso = -1;
         List<int[]> sorteiosAnteriores = new ArrayList<>(this.qtdSorteios);
@@ -61,7 +58,7 @@ public class ComputeAusencia extends AbstractCompute {
         this.toposDezenas = Stats.calcToposAusencia(this.sorteios, this.qtdDezenas, this.maxTopos);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return this.countToposAusencia(jogo);
     }
 

@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeRecorrencia extends AbstractCompute {
 
-    public ComputeRecorrencia(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeRecorrencia(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
@@ -39,7 +39,7 @@ public class ComputeRecorrencia extends AbstractCompute {
         this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasRecorrenciasRepetidas, this.qtdSorteios);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return Stats.maxRecorrencias(jogo, this.sorteios, -1);  // nao corresponde a nenhum sorteio...
     }
 

@@ -5,8 +5,8 @@ import lothon.util.Stats;
 
 public class ComputeMatricial extends AbstractCompute {
 
-    public ComputeMatricial(Loteria loteria, int[][] jogos, int[][] sorteios, int threshold) {
-        super(loteria, jogos, sorteios, threshold);
+    public ComputeMatricial(Loteria loteria, int[][] sorteios, int threshold) {
+        super(loteria, sorteios, threshold);
     }
 
     public void run() {
@@ -16,16 +16,8 @@ public class ComputeMatricial extends AbstractCompute {
         // numero maximo de itens/matrizes corresponde ao numero de dezenas sorteadas ao dobro (para colunas e para linhas):
         int qtdItens = this.qtdBolas * 2;
 
-        // identifica o numero maximo de colunas e linhas de cada combinacao de jogo:
-        int[] matrizesJogos = Stats.newArrayInt(qtdItens);
-        for (final int[] jogo : this.jogos) {
-            // calculo da matriz (maximo de colunas e linhas):
-            int valMaxMatriz = Stats.maxColunas(jogo) + Stats.maxLinhas(jogo);
-            matrizesJogos[valMaxMatriz]++;
-        }
-
         // contabiliza o percentual das matrizes:
-        this.jogosPercentos = Stats.toPercentos(matrizesJogos, this.qtdJogos);
+        this.jogosPercentos = Stats.toPercentos(this.loteria.getMatriciaisJogos(), this.loteria.qtdJogos);
 
         // contabiliza as matrizes repetidas em cada sorteio dos concursos:
         int[] ultimasMatrizesRepetidas = Stats.newArrayInt(qtdItens);
@@ -47,7 +39,7 @@ public class ComputeMatricial extends AbstractCompute {
         this.ultimosSorteiosPercentos = Stats.toPercentos(ultimasMatrizesRepetidas, this.qtdSorteios);
     }
 
-    public int rateJogo(int ordinal, int[] jogo) {
+    public int rateJogo(int[] jogo) {
         return Stats.maxColunas(jogo) + Stats.maxLinhas(jogo);
     }
 

@@ -21,22 +21,21 @@ public abstract class AbstractProcess implements Runnable {
         this.jogosComputados = null;
     }
 
-    protected AbstractCompute[] getComputeChain(int[][] jogos, int[][] sorteios, int threshold) {
+    protected AbstractCompute[] getComputeChain(int[][] sorteios, int threshold) {
         return new AbstractCompute[]{
-                new ComputeMatricial(this.loteria, jogos, sorteios, threshold),
-                new ComputeEspacamento(this.loteria, jogos, sorteios, threshold),
-                new ComputeSequencia(this.loteria, jogos, sorteios, threshold),
-                new ComputeParidade(this.loteria, jogos, sorteios, threshold),
-                new ComputeFrequencia(this.loteria, jogos, sorteios, threshold),
-                new ComputeAusencia(this.loteria, jogos, sorteios, threshold),
-                new ComputeMediana(this.loteria, jogos, sorteios, threshold),
-                new ComputeRecorrencia(this.loteria, jogos, sorteios, threshold),
-                new ComputeRepetencia(this.loteria, jogos, sorteios, threshold)
+                new ComputeMatricial(this.loteria, sorteios, threshold),
+                new ComputeEspacamento(this.loteria, sorteios, threshold),
+                new ComputeSequencia(this.loteria, sorteios, threshold),
+                new ComputeParidade(this.loteria, sorteios, threshold),
+                new ComputeAusencia(this.loteria, sorteios, threshold),
+                new ComputeFrequencia(this.loteria, sorteios, threshold),
+                new ComputeMediana(this.loteria, sorteios, threshold),
+                new ComputeRepetencia(this.loteria, sorteios, threshold)
         };
     }
 
-    protected AbstractCompute[] initComputeChain(int[][] jogos, int[][] sorteios, int threshold) {
-        AbstractCompute[] computeChain = this.getComputeChain(jogos, sorteios, threshold);
+    protected AbstractCompute[] initComputeChain(int[][] sorteios, int threshold) {
+        AbstractCompute[] computeChain = this.getComputeChain(sorteios, threshold);
 
         for (final AbstractCompute compute : computeChain)
             try {
