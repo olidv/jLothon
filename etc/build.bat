@@ -25,7 +25,8 @@ echo Copiando arquivos e libraries para distribuicao
 copy target\*.jar dist\
 echo.
 
-echo Efetuando deploy da aplicacao no projeto Python/Lothon
+echo Efetuando deploy da aplicacao nos projetos Python
+copy dist\*.* ..\..\Python\Infinite\lib
 copy dist\*.* ..\..\Python\Lothon\lib
 echo.
 
