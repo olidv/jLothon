@@ -17,14 +17,15 @@ public class Main {
     private static void printOpcoes(String msgErro) {
         print(msgErro + '\n');
         print("Uso: Para processar os sorteios das loterias e calcular estatisticas");
-        print("  jLothon  -c  [unidade:][diretorio] -j [d|p|l|q|m] \n");
+        print("  jLothon  -c  [unidade:][diretorio] -j [d|p|l|m|q|r] \n");
         print("\t -c [diretorio]  Especifica o local com os arquivos de sorteios das Loterias");
-        print("\t -j [d|p|l|q|m]  Processa os jogos da loteria indicada:");
-        print("\t                 d = Dia de Sorte");
-        print("\t                 p = Dupla Sena");
-        print("\t                 l = Lotofacil");
-        print("\t                 q = Quina");
-        print("\t                 m = Mega-Sena");
+        print("\t -j [d|p|l|m|q|r]  Processa os jogos da loteria indicada:");
+        print("\t                   d = Dia de Sorte");
+        print("\t                   p = Dupla Sena");
+        print("\t                   l = Lotofacil");
+        print("\t                   m = Mega-Sena");
+        print("\t                   q = Quina");
+        print("\t                   r = +Milionaria");
     }
 
     private static AbstractProcess parseLoteria(String loteria, File dataDir) {
@@ -32,8 +33,9 @@ public class Main {
             case "d" -> new ProcessDiaDeSorte(dataDir, MIN_THRESHOLD);
             case "p" -> new ProcessDuplaSena(dataDir, MIN_THRESHOLD);
             case "l" -> new ProcessLotofacil(dataDir, MIN_THRESHOLD);
-            case "q" -> new ProcessQuina(dataDir, MIN_THRESHOLD);
             case "m" -> new ProcessMegaSena(dataDir, MIN_THRESHOLD);
+            case "q" -> new ProcessQuina(dataDir, MIN_THRESHOLD);
+            case "r" -> new ProcessMaisMilionaria(dataDir, MIN_THRESHOLD);
             default -> null;
         };
     }
