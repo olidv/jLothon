@@ -71,7 +71,7 @@ public class Main {
 
         String loteria = args[3].toLowerCase();
         AbstractProcess process = parseLoteria(loteria, dataDir);
-        if (loteria.length() != 1 || !"dplqm".contains(loteria) || process == null) {
+        if (loteria.length() != 1 || !"dplmqr".contains(loteria) || process == null) {
             printOpcoes("ERRO: Codigo da loteria invalido.");
             System.exit(1);
         }
