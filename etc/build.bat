@@ -26,7 +26,7 @@ copy target\*.jar dist\
 echo.
 
 echo Efetuando deploy da aplicacao nos projetos Python
-copy dist\*.* ..\..\Python\Infinite\lib
+copy dist\*.* ..\..\Python\Colethon\lib
 copy dist\*.* ..\..\Python\Lothon\lib
 echo.
 
