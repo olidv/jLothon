@@ -92,9 +92,8 @@ testedb.trace.db
 .DS_Store
 Thumbs.db
 
-# Diversos
+# npm tools
 /coverage
-/data
 /typings
 connect.lock
 .editorconfig
@@ -103,3 +102,18 @@ npm-debug.log
 .sass-cache
 testem.log
 yarn-error.log
+
+# Visual Studio Code
+.vscode/
+.history/
+prettierignore.txt
+*.code-workspace
+
+# ---------------------------------------------------------
+
+#####
+# End of core ignore list, 
+# below put you custom 'per project' settings,
+# patterns or path.
+#####
+data/
