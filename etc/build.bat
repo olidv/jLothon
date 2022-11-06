@@ -3,7 +3,7 @@ color E
 
 rem Printa a apresentacao do build:
 echo.
-echo  BUILD DO jLOTHON   [ D:\WORKSPACE\LOTO365\JLOTHON\ETC\BUILD.BAT ]
+echo  BUILD DO jLOTHON   [ D:\WORKSPACE\INFINITE\JLOTHON\ETC\BUILD.BAT ]
 echo.
 echo.
 
@@ -27,7 +27,7 @@ echo.
 
 echo Efetuando deploy da aplicacao nos projetos Python
 copy dist\*.* D:\Workspace\Infinite\Colethon\lib\
-copy dist\*.* D:\Workspace\Loto365\Lothon\lib\
+copy dist\*.* D:\Workspace\Infinite\Lothon\lib\
 echo.
 
 rem Pausa final...
