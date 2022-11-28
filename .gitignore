@@ -117,3 +117,5 @@ prettierignore.txt
 # patterns or path.
 #####
 data/
+logs/
+tmp/
